@@ -29,7 +29,7 @@ variable "environment" {
 
 # SSH Public Key for Linux VMs
 variable "ssh_public_key" {
-  description = "This variable defines in the Pipeline as variable (-var sssh_public_key) "SSH Public Key" for Linux k8s Worker nodes"  
+  description = "This variable defines in the Pipeline as variable (-var sssh_public_key) SSH Public Key for Linux k8s Worker nodes"  
 }
 
 
