@@ -36,19 +36,11 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
 
 
 # RBAC and Azure AD Integration Block
-#role_based_access_control {
-#  enabled = true
-#  azure_active_directory {
-#    managed                = true
-#    admin_group_object_ids = [azuread_group.aks_administrators.id]
-#  }
-#}  
 
-
-#azure_active_directory_role_based_access_control {
+azure_active_directory_role_based_access_control {
   
-  #admin_group_object_ids = [azuread_group.aks_administrators.object_id] # ADDED OCT2024
-#}
+  admin_group_object_ids = [azuread_group.aks_administrators.object_id] 
+}
 
 
 # Linux Profile
