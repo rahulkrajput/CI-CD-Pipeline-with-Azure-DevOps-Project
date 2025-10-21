@@ -96,7 +96,6 @@ git commit -am "CI-CD-Pipeline-with-Azure-DevOps-Project"
 git remote add origin https://github.com/rahulkrajput/CI-CD-Pipeline-with-Azure-DevOps-Project.git
 git push --set-upstream origin master 
 
-
 ```     
 
 
@@ -203,39 +202,38 @@ pool: Default #(Self-Hosted-Agent)
 
 
 stages:
-- stage: TerraformValidate
-  jobs:
-    - job: TerraformValidateJob
-      continueOnError: false
-      steps:
-      - task: PublishPipelineArtifact@1
-        displayName: Publish Artifacts
-        inputs:
-          targetPath: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-          artifact: 'terraform-manifests-out'
-          publishLocation: 'pipeline'
-      - task: TerraformInstaller@0
-        displayName: Terraform Install
-        inputs:
-          terraformVersion: 'latest'
-      - task: TerraformCLI@0
-        displayName: Terraform Init
-        inputs:
-          command: 'init'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-          backendType: 'azurerm'
-          backendServiceArm: 'terraform-aks-cluster-svc-conn'
-          backendAzureRmResourceGroupName: 'terraform-storage-rg'
-          backendAzureRmStorageAccountName: 'terraformstorage05'
-          backendAzureRmContainerName: 'tfstatebackupfile'
-          backendAzureRmKey: 'aks-base.tfstate'
-          allowTelemetryCollection: false
-      - task: TerraformCLI@0
-        displayName: Terraform Validate
-        inputs:
-          command: 'validate'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-          allowTelemetryCollection: false       
+  - stage: TerraformValidate
+    jobs:
+      - job: TerraformValidateJob
+        continueOnError: false
+        steps:
+        - task: PublishPipelineArtifact@1
+          displayName: Publish Artifacts
+          inputs:
+            targetPath: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+            artifact: 'terraform-manifests-out'
+            publishLocation: 'pipeline'
+        - task: TerraformInstaller@1
+          displayName: Terraform Install
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformTaskV4@4
+          displayName: Terraform Init
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+            backendServiceArm: 'terraform-aks-cluster-svc-conn'
+            backendAzureRmResourceGroupName: 'terraform-storage-rg'
+            backendAzureRmStorageAccountName: 'terraformstorage05'
+            backendAzureRmContainerName: 'tfstatebackupfile'
+            backendAzureRmKey: 'aks-base.tfstate'
+        - task: TerraformTaskV4@4
+          displayName: Terraform validate
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'       
 ```
 
 
@@ -249,7 +247,7 @@ stages:
     - **Step-5:** Terraform Apply 
 
 
-### Stage-2: Deployment-1: Deploy Dev AKS Cluster
+### Stage-2: Deployment-1: Deploy Prod AKS Cluster
 ```yaml
 
 # Define Variables
@@ -352,8 +350,6 @@ kubectl get nodes
 
 ## References
 - [Publish & Download Artifacts in Azure DevOps Pipeline](https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml)
-- [Azure Pipelines - Deployment Jobs](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/deployment-jobs?view=azure-devops)
-
 - [Azure DevOps Pipelines - Deployment Jobs](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/deployment-jobs?view=azure-devops)
 - [Azure DevOps Pipelines - Environments](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/environments?view=azure-devops)
 
