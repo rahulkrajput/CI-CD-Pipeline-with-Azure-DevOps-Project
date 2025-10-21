@@ -19,6 +19,7 @@ steps:
     azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
     azureResourceGroup: 'terraform-aks-prod'
     kubernetesCluster: 'terraform-aks-prod-cluster'
+    useClusterAdmin: true
     namespace: 'default'
     manifests: 'kubernetes-cluster-manifests/01-Webserver-Apps/01-NginxApp1-Deployment.yml'
 - task: KubernetesManifest@1
