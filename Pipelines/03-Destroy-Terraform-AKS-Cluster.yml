@@ -23,7 +23,7 @@ stages:
             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
             backendAzureRmUseEntraIdForAuthentication: false
             backendServiceArm: 'terraform-aks-cluster-svc-conn'
-            backendAzureRmResourceGroupName: 'terraform-state-rg'
+            backendAzureRmResourceGroupName: 'terraform-storage-rg'
             backendAzureRmStorageAccountName: 'terraformstorage05'
             backendAzureRmContainerName: 'tfstatebackupfile'
             backendAzureRmKey: 'aks-prod.tfstate'
