@@ -1,0 +1,32 @@
+# Deploy Kubernetes Deployment On AKS Cluster Pipeline
+
+trigger:
+ branches:
+   include:
+     - main
+ paths:
+   include:
+     - Pipelines/02-Deploy-Kubernetes-Deployment-On-AKS-Cluster.yml
+
+pool: Default
+  
+
+steps:
+- task: KubernetesManifest@1
+  inputs:
+    action: 'deploy'
+    connectionType: 'azureResourceManager'
+    azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
+    azureResourceGroup: 'terraform-aks-prod'
+    kubernetesCluster: 'terraform-aks-prod-cluster'
+    namespace: 'default'
+    manifests: 'kubernetes-cluster-manifests/01-Webserver-Apps/01-NginxApp1-Deployment.yml'
+- task: KubernetesManifest@1
+  inputs:
+    action: 'deploy'
+    connectionType: 'azureResourceManager'
+    azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
+    azureResourceGroup: 'terraform-aks-prod'
+    kubernetesCluster: 'terraform-aks-prod-cluster'
+    namespace: 'default'
+    manifests: 'kubernetes-cluster-manifests/01-Webserver-Apps/02-NginxApp1-LoadBalancer-Service.yml'
