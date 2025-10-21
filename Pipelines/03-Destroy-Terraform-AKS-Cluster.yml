@@ -26,7 +26,7 @@ stages:
             backendAzureRmResourceGroupName: 'terraform-state-rg'
             backendAzureRmStorageAccountName: 'terraformstorage05'
             backendAzureRmContainerName: 'tfstatebackupfile'
-            backendAzureRmKey: 'aks-base.tfstate'
+            backendAzureRmKey: 'aks-prod.tfstate'
 
   - stage: destroy_env
     jobs: 
@@ -42,11 +42,11 @@ stages:
             command: 'init'
             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
             backendAzureRmUseEntraIdForAuthentication: false
-            backendServiceArm: 'Azure for Students(f981b0b0-4f30-4eff-87c9-60953b171f0a)'
+            backendServiceArm: 'Azure for Students(1)(f981b0b0-4f30-4eff-87c9-60953b171f0a)'
             backendAzureRmResourceGroupName: 'terraform-state-rg'
             backendAzureRmStorageAccountName: 'terraformstorage05'
             backendAzureRmContainerName: 'tfstatebackupfile'
-            backendAzureRmKey: 'aks-base.tfstate'     
+            backendAzureRmKey: 'aks-prod.tfstate'
         
         - task: TerraformTask@5
           inputs:
