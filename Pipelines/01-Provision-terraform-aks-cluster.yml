@@ -5,7 +5,7 @@ trigger:
      - main
  paths:
    include:
-     - Pipelines/01-terraform-provision-aks-cluster-pipeline.yml
+     - Pipelines/01-Provision-terraform-aks-cluster.yml
      - terraform-manifests
 
 pool: Default
@@ -14,15 +14,11 @@ pool: Default
 variables:
 - name: PROD_ENVIRONMENT
   value: prod
-- name: DEV_ENVIRONMENT
-  value: dev
-- name: QA_ENVIRONMENT
-  value: qa
 
 
 #Stage-1: Terraform Validate Stage
-   ##Step-1: Publish Artifacts to Pipeline (Pipeline artifacts provide a way to share files between stages in a pipeline or between different pipelines. )
-   ##Step-2: Install Latest Terraform (0.13.5) (Ideally not needed if we use default Agents)
+   ##Step-1: Publish Artifacts to Pipeline 
+   ##Step-2: Install Terraform 
    ##Step-3: Validate Terraform Manifests
 
 
@@ -64,12 +60,12 @@ stages:
 
 
 # Stage-2: Deploy Stages for PROD
-# Deployment-1: Deploy PROD AKS Cluster
+
 ## Step-1: Define Variables for environments
 ## Step-2: Download SSH Secure File
-## Step-3: Terraform Initialize (State Storage to store in Azure Storage Account for PROD AKS Cluster)
-## Step-4: Terraform Plan (Create Plan)
-## Step-5: Terraform Apply (Use the plan created in previous step)
+## Step-3: Terraform Initialize 
+## Step-4: Terraform Plan 
+## Step-5: Terraform Apply 
 
   - stage: DeployPRODAKSCluster
     jobs:
