@@ -54,6 +54,6 @@ stages:
             command: 'destroy'
             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
             commandOptions: '--auto-approve'
-            environmentServiceNameAzureRM: 'Azure for Students(f981b0b0-4f30-4eff-87c9-60953b171f0a)'
+            environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
 
   
