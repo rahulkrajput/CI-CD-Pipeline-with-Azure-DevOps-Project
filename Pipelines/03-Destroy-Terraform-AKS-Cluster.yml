@@ -22,7 +22,7 @@ stages:
             command: 'init'
             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
             backendAzureRmUseEntraIdForAuthentication: false
-            backendServiceArm: 'terraform-aks-cluster-svc-conn'
+            backendServiceArm: 'Azure for Students(f981b0b0-4f30-4eff-87c9-60953b171f0a)'
             backendAzureRmResourceGroupName: 'terraform-storage-rg'
             backendAzureRmStorageAccountName: 'terraformstorage05'
             backendAzureRmContainerName: 'tfstatebackupfile'
@@ -42,7 +42,7 @@ stages:
             command: 'init'
             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
             backendAzureRmUseEntraIdForAuthentication: false
-            backendServiceArm: 'terraform-aks-cluster-svc-conn'
+            backendServiceArm: 'Azure for Students(f981b0b0-4f30-4eff-87c9-60953b171f0a)'
             backendAzureRmResourceGroupName: 'terraform-storage-rg'
             backendAzureRmStorageAccountName: 'terraformstorage05'
             backendAzureRmContainerName: 'tfstatebackupfile'
@@ -54,6 +54,6 @@ stages:
             command: 'destroy'
             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
             commandOptions: '--auto-approve'
-            environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
+            environmentServiceNameAzureRM: 'Azure for Students(f981b0b0-4f30-4eff-87c9-60953b171f0a)'
 
   
