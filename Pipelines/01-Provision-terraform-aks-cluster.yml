@@ -50,7 +50,7 @@ stages:
             backendAzureRmResourceGroupName: 'terraform-storage-rg'
             backendAzureRmStorageAccountName: 'terraformstorage05'
             backendAzureRmContainerName: 'tfstatebackupfile'
-            backendAzureRmKey: 'aks-base.tfstate'
+            backendAzureRmKey: 'aks-$(PROD_ENVIRONMENT).tfstate'
         - task: TerraformTaskV4@4
           displayName: Terraform validate
           inputs:
