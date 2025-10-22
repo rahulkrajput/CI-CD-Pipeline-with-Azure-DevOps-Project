@@ -26,7 +26,7 @@ variable "environment" {
 
 # SSH Public Key for Linux VMs
 variable "ssh_public_key" {
-  description = "This variable defines the SSH Public Key for Linux k8s Worker nodes"  
+  description = "This variable defines SSH Public Key for Linux k8s Worker nodes"  
 }
 
 
