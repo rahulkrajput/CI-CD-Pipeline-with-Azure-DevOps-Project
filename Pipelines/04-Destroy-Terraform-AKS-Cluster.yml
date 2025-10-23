@@ -53,9 +53,9 @@ stages:
              backendAzureRmKey: 'aks-prod.tfstate'
          - task: TerraformTask@5
            inputs:
-            provider: 'azurerm'
-            command: 'destroy'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-            commandOptions: '-auto-approve'
-            environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
+             provider: 'azurerm'
+             command: 'destroy'
+             workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
+             commandOptions: '-auto-approve'
+             environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
 
