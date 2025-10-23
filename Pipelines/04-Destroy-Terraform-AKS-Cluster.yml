@@ -56,6 +56,6 @@ stages:
             provider: 'azurerm'
             command: 'destroy'
             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-            commandOptions: '--auto-approve'
+            commandOptions: '-auto-approve'
             environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
 
