@@ -1,0 +1,61 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger: none
+
+variables:
+  system.debug: true
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+   - stage: Plan_Destroy
+     jobs:
+      - job: Plan_Destroy
+        pool: Default
+        steps:
+        - task: TerraformInstaller@1
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+            backendAzureRmUseEntraIdForAuthentication: false
+            backendServiceArm: 'terraform-aks-cluster-svc-conn'
+            backendAzureRmResourceGroupName: 'terraform-storage-rg'
+            backendAzureRmStorageAccountName: 'terraformstorage05'
+            backendAzureRmContainerName: 'tfstatebackupfile'
+            backendAzureRmKey: 'aks-prod.tfstate'
+        
+   - stage: Destroy_Infra
+     jobs:
+       - job: Destroy_Infra
+         pool: Default
+         steps:
+         - task: TerraformInstaller@1
+           inputs:
+             terraformVersion: 'latest'
+         - task: TerraformTask@5
+           inputs:
+             provider: 'azurerm'
+             command: 'init'
+             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+             backendAzureRmUseEntraIdForAuthentication: false
+             backendServiceArm: 'terraform-aks-cluster-svc-conn'
+             backendAzureRmResourceGroupName: 'terraform-storage-rg'
+             backendAzureRmStorageAccountName: 'terraformstorage05'
+             backendAzureRmContainerName: 'tfstatebackupfile'
+             backendAzureRmKey: 'aks-prod.tfstate'
+         - task: TerraformTask@5
+           inputs:
+            provider: 'azurerm'
+            command: 'destroy'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+            commandOptions: '--auto-approve'
+            environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
+
