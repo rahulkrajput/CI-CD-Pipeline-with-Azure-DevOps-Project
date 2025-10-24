@@ -30,12 +30,6 @@ stages:
       - job: TerraformValidateJob
         continueOnError: false
         steps:
-        - task: PublishPipelineArtifact@1
-          displayName: Publish Artifacts
-          inputs:
-            targetPath: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-            artifact: 'terraform-manifests-out'
-            publishLocation: 'pipeline'
         - task: TerraformInstaller@1
           displayName: Terraform Install
           inputs:
@@ -92,29 +86,28 @@ stages:
                - task: TerraformTaskV4@4
                  displayName: Terraform Init
                  inputs:
-                    provider: 'azurerm'
-                    command: 'init'
-                    workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
-                    backendServiceArm: 'terraform-aks-cluster-svc-conn'
-                    backendAzureRmResourceGroupName: 'terraform-storage-rg'
-                    backendAzureRmStorageAccountName: 'terraformstorage05'
-                    backendAzureRmContainerName: 'tfstatebackupfile'
-                    backendAzureRmKey: 'aks-$(PROD_ENVIRONMENT).tfstate'
+                   provider: 'azurerm'
+                   command: 'init'
+                   workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+                   backendServiceArm: 'terraform-aks-cluster-svc-conn'
+                   backendAzureRmResourceGroupName: 'terraform-storage-rg'
+                   backendAzureRmStorageAccountName: 'terraformstorage05'
+                   backendAzureRmContainerName: 'tfstatebackupfile'
+                   backendAzureRmKey: 'aks-$(PROD_ENVIRONMENT).tfstate'
                - task: TerraformTaskV4@4
                  displayName: Terraform Plan
                  inputs:
-                    provider: 'azurerm'
-                    command: 'plan'
-                    workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
-                    commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath) -var environment=$(PROD_ENVIRONMENT) -out $(Pipeline.Workspace)/terraform-manifests-out/$(PROD_ENVIRONMENT)-$(Build.BuildId).out'
-                    environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
+                   provider: 'azurerm'
+                   command: 'plan'
+                   workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+                   commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath) -var environment=$(PROD_ENVIRONMENT)'
+                   environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
                - task: TerraformTaskV4@4
                  displayName: Terraform Apply
                  inputs:
                    provider: 'azurerm'
                    command: 'apply'
-                   workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
-                   commandOptions: '$(Pipeline.Workspace)/terraform-manifests-out/$(PROD_ENVIRONMENT)-$(Build.BuildId).out'
+                   workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
                    environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
 
 
