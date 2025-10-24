@@ -62,7 +62,7 @@ stages:
                inputs:
                  provider: 'azurerm'
                  command: 'init'
-                 workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+                 workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
                  backendAzureRmUseEntraIdForAuthentication: false
                  backendServiceArm: 'terraform-aks-cluster-svc-conn'
                  backendAzureRmResourceGroupName: 'terraform-storage-rg'
@@ -73,7 +73,7 @@ stages:
                inputs:
                  provider: 'azurerm'
                  command: 'destroy'
-                 workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-                 commandOptions: '--auto-approve'
+                 workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
+                 commandOptions: '--auto-approve $(Pipeline.Workspace)/terraform-manifests-out/prod-71.out'
                  environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
 
