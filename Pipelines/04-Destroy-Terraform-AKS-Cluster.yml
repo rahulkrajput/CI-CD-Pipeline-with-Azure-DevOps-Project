@@ -5,12 +5,11 @@
 
 trigger: none
 
-variables:
-  system.debug: true
 # Define Variables
 variables:
-- name: PROD_ENVIRONMENT
+  name: PROD_ENVIRONMENT
   value: prod
+  system.debug: true
 
 pool: Default
   
@@ -45,7 +44,7 @@ stages:
         
    - stage: Destroy_Infra
      jobs:
-       jobs:
+       
       - deployment: Destroy_Infra
         displayName: Destroy_Infra
         pool: Default
