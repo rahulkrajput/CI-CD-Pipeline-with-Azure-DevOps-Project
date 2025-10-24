@@ -108,7 +108,7 @@ stages:
                    provider: 'azurerm'
                    command: 'plan'
                    workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
-                   commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath) -var environment=$(PROD_ENVIRONMENT) -out $(Pipeline.Workspace)/terraform-manifests-out/$(DEV_ENVIRONMENT)-$(Build.BuildId).out'
+                   commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath) -var environment=$(PROD_ENVIRONMENT) -out $(Pipeline.Workspace)/terraform-manifests-out/$(PROD_ENVIRONMENT)-$(Build.BuildId).out'
                    environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
                - task: TerraformTaskV4@4
                  displayName: Terraform Apply
@@ -116,7 +116,7 @@ stages:
                    provider: 'azurerm'
                    command: 'apply'
                    workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
-                   commandOptions: '$(Pipeline.Workspace)/terraform-manifests-out/$(DEV_ENVIRONMENT)-$(Build.BuildId).out'
+                   commandOptions: '$(Pipeline.Workspace)/terraform-manifests-out/(PROD_ENVIRONMENT)-$(Build.BuildId).out'
                    environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
 
 
