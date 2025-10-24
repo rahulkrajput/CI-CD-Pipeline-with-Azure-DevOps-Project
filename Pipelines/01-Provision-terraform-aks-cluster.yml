@@ -12,8 +12,10 @@ pool: Default
   
 # Define Variables
 variables:
+
 - name: PROD_ENVIRONMENT
   value: prod
+
 
 
 
@@ -44,7 +46,7 @@ stages:
             backendAzureRmResourceGroupName: 'terraform-storage-rg'
             backendAzureRmStorageAccountName: 'terraformstorage05'
             backendAzureRmContainerName: 'tfstatebackupfile'
-            backendAzureRmKey: 'aks-$(PROD_ENVIRONMENT).tfstate'
+            backendAzureRmKey: 'aks-prod.tfstate'
         - task: TerraformTaskV4@4
           displayName: Terraform validate
           inputs:
