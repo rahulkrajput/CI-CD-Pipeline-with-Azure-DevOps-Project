@@ -47,18 +47,7 @@ stages:
             backendAzureRmContainerName: 'tfstatebackupfile'
             backendAzureRmKey: 'aks-prod.tfstate'
         
-        - task: TerraformTask@5
-          displayName: Terraform Init
-          inputs:
-                 provider: 'azurerm'
-                 command: 'init'
-                 workingDirectory: '$(Pipeline.Workspace)/terraform-build-artifacts'
-                 backendAzureRmUseEntraIdForAuthentication: false
-                 backendServiceArm: 'terraform-aks-cluster-svc-conn'
-                 backendAzureRmResourceGroupName: 'terraform-storage-rg'
-                 backendAzureRmStorageAccountName: 'terraformstorage05'
-                 backendAzureRmContainerName: 'tfstatebackupfile'
-                 backendAzureRmKey: 'aks-prod.tfstate'
+        
         - task: TerraformTask@5
           displayName: Destroy AKS Cluster
           inputs:
