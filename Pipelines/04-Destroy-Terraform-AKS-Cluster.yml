@@ -7,6 +7,10 @@ trigger: none
 
 variables:
   system.debug: true
+# Define Variables
+variables:
+- name: PROD_ENVIRONMENT
+  value: prod
 
 pool: Default
   
@@ -41,28 +45,36 @@ stages:
         
    - stage: Destroy_Infra
      jobs:
-       - job: Destroy_Infra
-         pool: Default
-         steps:
-         - task: TerraformInstaller@1
-           inputs:
-             terraformVersion: 'latest'
-         - task: TerraformTask@5
-           inputs:
-             provider: 'azurerm'
-             command: 'init'
-             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-             backendAzureRmUseEntraIdForAuthentication: false
-             backendServiceArm: 'terraform-aks-cluster-svc-conn'
-             backendAzureRmResourceGroupName: 'terraform-storage-rg'
-             backendAzureRmStorageAccountName: 'terraformstorage05'
-             backendAzureRmContainerName: 'tfstatebackupfile'
-             backendAzureRmKey: 'aks-prod.tfstate'
-         - task: TerraformTask@5
-           inputs:
-             provider: 'azurerm'
-             command: 'destroy'
-             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-             commandOptions: '-auto-approve'
-             environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
+       jobs:
+      - deployment: Destroy_Infra
+        displayName: Destroy_Infra
+        pool: Default
+        workspace:
+          clean: all
+        environment: $(PROD_ENVIRONMENT)
+        strategy:
+         runOnce:
+           deploy:
+             steps:
+             - task: TerraformInstaller@1
+               inputs:
+                 terraformVersion: 'latest'
+             - task: TerraformTask@5
+               inputs:
+                 provider: 'azurerm'
+                 command: 'init'
+                 workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+                 backendAzureRmUseEntraIdForAuthentication: false
+                 backendServiceArm: 'terraform-aks-cluster-svc-conn'
+                 backendAzureRmResourceGroupName: 'terraform-storage-rg'
+                 backendAzureRmStorageAccountName: 'terraformstorage05'
+                 backendAzureRmContainerName: 'tfstatebackupfile'
+                 backendAzureRmKey: 'aks-prod.tfstate'
+             - task: TerraformTask@5
+               inputs:
+                 provider: 'azurerm'
+                 command: 'destroy'
+                 workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+                 commandOptions: '--auto-approve'
+                 environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
 
