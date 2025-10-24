@@ -7,9 +7,9 @@ trigger: none
 
 # Define Variables
 variables:
-  name: PROD_ENVIRONMENT
+- name: PROD_ENVIRONMENT
   value: prod
-  system.debug: true
+  #system.debug: true
 
 pool: Default
   
