@@ -74,6 +74,6 @@ stages:
                  provider: 'azurerm'
                  command: 'destroy'
                  workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
-                 commandOptions: '--auto-approve $(Pipeline.Workspace)/terraform-manifests-out/prod-71.out'
+                 commandOptions: '-auto-approve $(Pipeline.Workspace)/terraform-manifests-out/$(PROD_ENVIRONMENT)-$(Build.BuildId).out'
                  environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
 
