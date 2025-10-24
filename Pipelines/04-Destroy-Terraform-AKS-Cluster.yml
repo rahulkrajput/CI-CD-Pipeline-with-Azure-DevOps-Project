@@ -47,25 +47,9 @@ stages:
             backendAzureRmContainerName: 'tfstatebackupfile'
             backendAzureRmKey: 'aks-prod.tfstate'
         
-   - stage: Destroy_Infra
-     jobs:
-       
-      - deployment: Destroy_Infra
-        displayName: Destroy_Infra
-        pool: Default
-        workspace:
-          clean: all
-        environment: $(PROD_ENVIRONMENT)
-        strategy:
-         runOnce:
-           deploy:
-             steps:
-             - task: TerraformInstaller@1
-               inputs:
-                 terraformVersion: 'latest'
-             - task: TerraformTask@5
-               displayName: Terraform Init
-               inputs:
+        - task: TerraformTask@5
+          displayName: Terraform Init
+          inputs:
                  provider: 'azurerm'
                  command: 'init'
                  workingDirectory: '$(Pipeline.Workspace)/terraform-build-artifacts'
@@ -75,9 +59,9 @@ stages:
                  backendAzureRmStorageAccountName: 'terraformstorage05'
                  backendAzureRmContainerName: 'tfstatebackupfile'
                  backendAzureRmKey: 'aks-prod.tfstate'
-             - task: TerraformTask@5
-               displayName: Destroy AKS Cluster
-               inputs:
+        - task: TerraformTask@5
+          displayName: Destroy AKS Cluster
+          inputs:
                  provider: 'azurerm'
                  command: 'destroy'
                  workingDirectory: '$(Pipeline.Workspace)/terraform-build-artifacts'
