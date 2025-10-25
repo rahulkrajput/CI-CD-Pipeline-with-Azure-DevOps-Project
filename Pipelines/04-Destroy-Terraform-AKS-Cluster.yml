@@ -67,10 +67,10 @@ stages:
 ## Step-4: Terraform Plan 
 ## Step-5: Terraform Apply 
 
-  - stage: DeployPRODAKSCluster
+  - stage: DestroyPRODAKSCluster
     jobs:
-      - deployment: DeployPRODAKSCluster
-        displayName: DeployPRODAKSCluster
+      - deployment: DestroyPRODAKSCluster
+        displayName: DestroyPRODAKSCluster
         pool: Default
         workspace:
           clean: all
