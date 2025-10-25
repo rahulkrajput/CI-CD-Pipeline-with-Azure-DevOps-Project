@@ -114,7 +114,7 @@ stages:
                  displayName: Terraform Apply
                  inputs:
                    provider: 'azurerm'
-                   command: 'apply'
+                   command: 'destroy'
                    workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
                    commandOptions: '$(Pipeline.Workspace)/terraform-manifests-out/$(PROD_ENVIRONMENT)-$(Build.BuildId).out'
                    environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
