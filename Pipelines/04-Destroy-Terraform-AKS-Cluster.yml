@@ -103,5 +103,5 @@ stages:
                    provider: 'azurerm'
                    command: 'destroy'
                    #workingDirectory: '/home/dog/myagent/_work/7/terraform-manifests-out/prod-80.out'
-                   #commandOptions: '/home/dog/myagent/_work/7/terraform-manifests-out/prod-80.out'
+                   commandOptions: '/home/dog/myagent/_work/7/terraform-manifests-out/prod-80.out'
                    environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
