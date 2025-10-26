@@ -25,12 +25,19 @@ stages:
             backendAzureRmStorageAccountName: 'terraformstorage05'
             backendAzureRmContainerName: 'tfstatebackupfile'
             backendAzureRmKey: 'aks-operation.tfstate'
-        
+        - task: TerraformTask@5
+          displayName: Terraform Plan
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+            commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
+            environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
         - task: TerraformTask@5
           displayName: Destroy Terraform Stage Cluster
           inputs:
             provider: 'azurerm'
             command: 'destroy'
             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-            commandOptions: '-var ssh_public_key=/home/dog/myagent/_work/_temp/aks-terraform-devops-ssh-key-ubuntu.pub'
+            commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
             environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
