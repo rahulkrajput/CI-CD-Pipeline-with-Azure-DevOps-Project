@@ -1,11 +1,12 @@
-trigger:
- branches:
-   include:
-     - main
- #paths:
-   #include:
-    # - Pipelines/01-Provision-terraform-aks-cluster.yml
-    # - terraform-manifests
+
+trigger: none
+#  branches:
+#    include:
+#      - main
+#  paths:
+#    include:
+#      - Pipelines/01-Provision-terraform-aks-cluster.yml
+#      - terraform-manifests
 
 pool: Default
   
@@ -18,44 +19,46 @@ variables:
 
 
 
-# #Stage-1: Terraform Validate Stage
-#    ##Step-1: Publish Artifacts to Pipeline 
-#    ##Step-2: Install Terraform 
-#    ##Step-3: Validate Terraform Manifests
+#Stage-1: Terraform Validate Stage
+   ##Step-1: Publish Artifacts to Pipeline 
+   ##Step-2: Install Terraform 
+   ##Step-3: Validate Terraform Manifests
 
-# stages:
-#   - stage: TerraformValidate
-#     jobs:
-#       - job: TerraformValidateJob
-#         continueOnError: false
-#         steps:
-#         - task: PublishPipelineArtifact@1
-#           displayName: Publish Artifacts
-#           inputs:
-#             targetPath: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-#             artifact: 'terraform-manifests-out'
-#             publishLocation: 'pipeline'
-#         - task: TerraformInstaller@1
-#           displayName: Terraform Install
-#           inputs:
-#             terraformVersion: 'latest'
-#         - task: TerraformTaskV4@4
-#           displayName: Terraform Init
-#           inputs:
-#             provider: 'azurerm'
-#             command: 'init'
-#             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-#             backendServiceArm: 'terraform-aks-cluster-svc-conn'
-#             backendAzureRmResourceGroupName: 'terraform-storage-rg'
-#             backendAzureRmStorageAccountName: 'terraformstorage05'
-#             backendAzureRmContainerName: 'tfstatebackupfile'
-#             backendAzureRmKey: 'aks-prod.tfstate'
-#         - task: TerraformTaskV4@4
-#           displayName: Terraform validate
-#           inputs:
-#             provider: 'azurerm'
-#             command: 'validate'
-#             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+
+
+stages:
+  - stage: TerraformValidate
+    jobs:
+      - job: TerraformValidateJob
+        continueOnError: false
+        steps:
+        - task: PublishPipelineArtifact@1
+          displayName: Publish Artifacts
+          inputs:
+            targetPath: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+            artifact: 'terraform-manifests-out'
+            publishLocation: 'pipeline'
+        - task: TerraformInstaller@1
+          displayName: Terraform Install
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformTaskV4@4
+          displayName: Terraform Init
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+            backendServiceArm: 'terraform-aks-cluster-svc-conn'
+            backendAzureRmResourceGroupName: 'terraform-storage-rg'
+            backendAzureRmStorageAccountName: 'terraformstorage05'
+            backendAzureRmContainerName: 'tfstatebackupfile'
+            backendAzureRmKey: 'aks-prod.tfstate'
+        - task: TerraformTaskV4@4
+          displayName: Terraform validate
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
 
 
 
@@ -66,12 +69,11 @@ variables:
 ## Step-3: Terraform Initialize 
 ## Step-4: Terraform Plan 
 ## Step-5: Terraform Apply 
-stages:
-  
-  - stage: DestroyPRODAKSCluster
+
+  - stage: DeployPRODAKSCluster
     jobs:
-      - deployment: DestroyPRODAKSCluster
-        displayName: DestroyPRODAKSCluster
+      - deployment: DeployPRODAKSCluster
+        displayName: DeployPRODAKSCluster
         pool: Default
         workspace:
           clean: all
@@ -84,24 +86,42 @@ stages:
                  displayName: Terraform Install
                  inputs:
                    terraformVersion: 'latest'
-              
+               - task: DownloadSecureFile@1
+                 displayName: Download SSH Key
+                 name: sshkey
+                 inputs:
+                  secureFile: 'aks-terraform-devops-ssh-key-ubuntu.pub'
                - task: TerraformTaskV4@4
                  displayName: Terraform Init
                  inputs:
                    provider: 'azurerm'
                    command: 'init'
-                   workingDirectory: '/home/dog/myagent/_work/7/terraform-manifests-out'
+                   workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
                    backendServiceArm: 'terraform-aks-cluster-svc-conn'
                    backendAzureRmResourceGroupName: 'terraform-storage-rg'
                    backendAzureRmStorageAccountName: 'terraformstorage05'
                    backendAzureRmContainerName: 'tfstatebackupfile'
                    backendAzureRmKey: 'aks-$(PROD_ENVIRONMENT).tfstate'
-               
                - task: TerraformTaskV4@4
-                 displayName: Terraform Destroy
+                 displayName: Terraform Plan
+                 inputs:
+                   provider: 'azurerm'
+                   command: 'plan'
+                   workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
+                   commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath) -var environment=$(PROD_ENVIRONMENT) -out $(Pipeline.Workspace)/terraform-manifests-out/$(PROD_ENVIRONMENT)-$(Build.BuildId).out'
+                   environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
+               - task: TerraformTaskV4@4
+                 displayName: Terraform Apply
+                 inputs:
+                   provider: 'azurerm'
+                   command: 'apply'
+                   workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
+                   commandOptions: '$(Pipeline.Workspace)/terraform-manifests-out/$(PROD_ENVIRONMENT)-$(Build.BuildId).out'
+                   environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
+               - task: TerraformTaskV4@4
+                 displayName: Terraform Apply
                  inputs:
                    provider: 'azurerm'
                    command: 'destroy'
-                   #workingDirectory: '/home/dog/myagent/_work/7/terraform-manifests-out/prod-80.out'
-                   commandOptions: '/home/dog/myagent/_work/7/terraform-manifests-out/prod-80.out'
+                   workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
                    environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
