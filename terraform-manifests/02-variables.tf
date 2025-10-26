@@ -21,7 +21,8 @@ variable "environment" {
   default = "prod"
 }
 
-
+# Azure AKS SSH Public Key
+variable ssh_public_key {}
 
 
 
