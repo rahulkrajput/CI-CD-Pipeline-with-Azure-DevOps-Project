@@ -18,17 +18,10 @@ variable "resource_group_name" {
 variable "environment" {
   type = string  
   description = "This variable defines the Environment"  
-  #default = "prod"
+  default = "prod"
 }
 
 
-# AKS Input Variables
-
-# SSH Public Key for Linux VMs
-variable "ssh_public_key" {
-  description = "This variable defines SSH Public Key for Linux k8s Worker nodes" 
-  #default = "~/.ssh/aks-prod-sshkeys-terraform/aksprodsshkey.pub" 
-}
 
 
 
