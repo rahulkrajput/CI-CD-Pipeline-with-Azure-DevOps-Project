@@ -1,0 +1,34 @@
+
+trigger: none
+
+pool: Default
+
+stages:
+  - stage: Destroy Stage Cluster
+    jobs:
+      - job: DestroyStageCluster
+        pool: Default
+        steps:
+        - task: TerraformInstaller@1
+          displayName: Terraform Install
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformTask@5
+          displayName: Terraform Init
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+            backendAzureRmUseEntraIdForAuthentication: false
+            backendServiceArm: 'terraform-aks-cluster-svc-conn'
+            backendAzureRmResourceGroupName: 'terraform-storage-rg'
+            backendAzureRmStorageAccountName: 'terraformstorage05'
+            backendAzureRmContainerName: 'tfstatebackupfile'
+            backendAzureRmKey: 'aks-prod.tfstate'
+        - task: TerraformTask@5
+          displayName: Destroy Terraform Stage Cluster
+          inputs:
+            provider: 'azurerm'
+            command: 'destroy'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+            environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
