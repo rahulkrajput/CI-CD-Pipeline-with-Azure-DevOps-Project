@@ -16,6 +16,7 @@ stages:
         continueOnError: false
         steps:
         - task: TerraformInstaller@1
+          displayName: Terraform Install
           inputs:
             terraformVersion: 'latest'
         - task: TerraformTask@5
@@ -29,7 +30,7 @@ stages:
             backendAzureRmResourceGroupName: 'terraform-storage-rg'
             backendAzureRmStorageAccountName: 'terraformstorage05'
             backendAzureRmContainerName: 'tfstatebackupfile'
-            backendAzureRmKey: 'aks-prod.tfstate'
+            backendAzureRmKey: 'aks-operation.tfstate'
         - task: TerraformTask@5
           displayName: Terraform Validate
           inputs:
@@ -45,17 +46,14 @@ stages:
 ## Step-4: Terraform Plan 
 ## Step-5: Terraform Apply 
 
-  - stage: DeployProdCluster
+  - stage: DeployOperationCluster
     jobs:
-      - job: DeployProdCluster
-      #- deployment: 
-        displayName: DeployProdAKSCluster
+      - job: DeployOperationCluster
+        displayName: DeployOperationCluster
         pool: Default
-        # strategy: 
-        #  runOnce: 
-          # deploy:
         steps: 
               - task: TerraformInstaller@1
+                displayName: Terraform Install
                 inputs:
                   terraformVersion: 'latest'
               - task: DownloadSecureFile@1
@@ -64,6 +62,7 @@ stages:
                 inputs:
                   secureFile: 'aks-terraform-devops-ssh-key-ubuntu.pub'
               - task: TerraformTask@5
+                displayName: Terraform Init
                 inputs:
                   provider: 'azurerm'
                   command: 'init'
@@ -73,8 +72,9 @@ stages:
                   backendAzureRmResourceGroupName: 'terraform-storage-rg'
                   backendAzureRmStorageAccountName: 'terraformstorage05'
                   backendAzureRmContainerName: 'tfstatebackupfile'
-                  backendAzureRmKey: 'aks-prod.tfstate'
+                  backendAzureRmKey: 'aks-operation.tfstate'
               - task: TerraformTask@5
+                displayName: Terrafrom Plan
                 inputs:
                   provider: 'azurerm'
                   command: 'plan'
@@ -82,17 +82,18 @@ stages:
                   commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
                   environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
               - task: TerraformTask@5
+                displayName: Terrafrom Apply
                 inputs:
                   provider: 'azurerm'
                   command: 'apply'
                   workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
                   commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
                   environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
-              - task: TerraformTask@5
-                inputs:
-                  provider: 'azurerm'
-                  command: 'destroy'
-                  workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-                  commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
-                  environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
+            # - task: TerraformTask@5
+            #   inputs:
+              #     provider: 'azurerm'
+              #     command: 'destroy'
+              #     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+              #     commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
+              #     environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
 
