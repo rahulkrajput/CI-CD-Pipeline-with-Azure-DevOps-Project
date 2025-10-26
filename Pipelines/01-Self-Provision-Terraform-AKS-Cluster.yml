@@ -88,4 +88,10 @@ stages:
                   workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
                   commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
                   environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
+              - task: TerraformTask@5
+                inputs:
+                  provider: 'azurerm'
+                  command: 'destroy'
+                  workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+                  environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
 
