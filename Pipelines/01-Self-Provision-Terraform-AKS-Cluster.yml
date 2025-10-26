@@ -12,7 +12,7 @@ pool: Default
 stages:
   - stage: TerraformValidate
     jobs:
-      - job: TerraformValidate-Job
+      - job: TerraformValidateJob
         continueOnError: false
         steps:
         - task: TerraformInstaller@1
@@ -51,41 +51,41 @@ stages:
       #- deployment: 
         displayName: DeployProdAKSCluster
         pool: Default
-        strategy: 
-         runOnce: 
-          deploy:
-           steps: 
-            - task: TerraformInstaller@1
-              inputs:
-                terraformVersion: 'latest'
-            - task: DownloadSecureFile@1
-              displayName: Download SSH Key
-              name: sshkey
-              inputs:
-                secureFile: 'aks-terraform-devops-ssh-key-ubuntu.pub'
-            - task: TerraformTask@5
-              inputs:
-                provider: 'azurerm'
-                command: 'init'
-                workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-                backendAzureRmUseEntraIdForAuthentication: false
-                backendServiceArm: 'terraform-aks-cluster-svc-conn'
-                backendAzureRmResourceGroupName: 'terraform-storage-rg'
-                backendAzureRmStorageAccountName: 'terraformstorage05'
-                backendAzureRmContainerName: 'tfstatebackupfile'
-                backendAzureRmKey: 'aks-prod.tfstate'
-            - task: TerraformTask@5
-              inputs:
-                provider: 'azurerm'
-                command: 'plan'
-                workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-                commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
-                environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
-            - task: TerraformTask@5
-              inputs:
-                provider: 'azurerm'
-                command: 'apply'
-                workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-                commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
-                environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
+        # strategy: 
+        #  runOnce: 
+          # deploy:
+        steps: 
+              - task: TerraformInstaller@1
+                inputs:
+                  terraformVersion: 'latest'
+              - task: DownloadSecureFile@1
+                displayName: Download SSH Key
+                name: sshkey
+                inputs:
+                  secureFile: 'aks-terraform-devops-ssh-key-ubuntu.pub'
+              - task: TerraformTask@5
+                inputs:
+                  provider: 'azurerm'
+                  command: 'init'
+                  workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+                  backendAzureRmUseEntraIdForAuthentication: false
+                  backendServiceArm: 'terraform-aks-cluster-svc-conn'
+                  backendAzureRmResourceGroupName: 'terraform-storage-rg'
+                  backendAzureRmStorageAccountName: 'terraformstorage05'
+                  backendAzureRmContainerName: 'tfstatebackupfile'
+                  backendAzureRmKey: 'aks-prod.tfstate'
+              - task: TerraformTask@5
+                inputs:
+                  provider: 'azurerm'
+                  command: 'plan'
+                  workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+                  commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
+                  environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
+              - task: TerraformTask@5
+                inputs:
+                  provider: 'azurerm'
+                  command: 'apply'
+                  workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+                  commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
+                  environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
 
