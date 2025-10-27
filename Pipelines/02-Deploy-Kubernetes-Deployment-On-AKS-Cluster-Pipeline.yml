@@ -66,4 +66,5 @@ stages:
           kubernetesCluster: 'terraform-aks-prod-cluster'
           useClusterAdmin: true
           namespace: 'default'
+          arguments: '-f kubernetes-cluster-manifests/01-Webserver-Apps/'
         
