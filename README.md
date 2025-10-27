@@ -180,7 +180,7 @@ Public File: aks-terraform-devops-ssh-key-ubuntu.pub (To be uploaded to Azure De
 - Click on **Approve and Install** on Github
 ### Configure your Pipeline
 - Select Pipeline: Starter Pipeline  
-- Pipeline Name: 01-Provision-terraform-aks-cluster.yml
+- Pipeline Name: 01-Provision-and-Destroy-Terraform-AKS-Cluster-Pipeline.yml
 - Design your Pipeline As Per Need
 ### Pipeline Save and Run
 - Click on **Save and Run**
