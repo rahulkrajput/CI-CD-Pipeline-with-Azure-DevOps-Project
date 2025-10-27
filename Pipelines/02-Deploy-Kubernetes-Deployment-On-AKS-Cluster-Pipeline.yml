@@ -1,12 +1,10 @@
 # Deploy Kubernetes Deployment On AKS Cluster Pipeline
 
 trigger:
- branches:
-   include:
-     - main
+ 
  paths:
    include:
-     - Pipelines/02-Deploy-Kubernetes-Deployment-On-AKS-Cluster.yml
+     - Pipelines/02-Deploy-Kubernetes-Deployment-On-AKS-Cluster-Pipeline.yml
 
 pool: Default
   

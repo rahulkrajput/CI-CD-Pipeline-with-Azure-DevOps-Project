@@ -1,5 +1,10 @@
 
-trigger: none
+trigger:
+ paths:
+   include:
+     - Pipelines/01-Provision-and-Destroy-Terraform-AKS-Cluster-Pipeline.yml
+    
+
   
 
 pool: Default
@@ -38,18 +43,19 @@ stages:
             command: 'validate'
             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
 
-# Stage-2: Deploy Stages for PROD
+# Stage-2: Deploy Stages for Prod Cluster
 
-## Step-1: Define Variables for environments
-## Step-2: Download SSH Secure File
-## Step-3: Terraform Initialize 
-## Step-4: Terraform Plan 
-## Step-5: Terraform Apply 
+    ## Step-1: Terraform Install
+    ## Step-2: Download SSH Secure File
+    ## Step-3: Terraform Initialize 
+    ## Step-4: Terraform Plan 
+    ## Step-5: Terraform Apply 
+    ## Step-6: When you want De-Comission AKS Cluster then Uncomment "destroy task" and the re-run pipeline.
 
-  - stage: DeployOperationCluster
+  - stage: DeployProdCluster
     jobs:
-      - job: DeployOperationCluster
-        displayName: DeployOperationCluster
+      - job: DeployProdCluster
+        displayName: DeployProdCluster
         pool: Default
         steps: 
               - task: TerraformInstaller@1
@@ -72,7 +78,7 @@ stages:
                   backendAzureRmResourceGroupName: 'terraform-storage-rg'
                   backendAzureRmStorageAccountName: 'terraformstorage05'
                   backendAzureRmContainerName: 'tfstatebackupfile'
-                  backendAzureRmKey: 'aks-operation.tfstate'
+                  backendAzureRmKey: 'prodcluster.tfstate'
               - task: TerraformTask@5
                 displayName: Terrafrom Plan
                 inputs:
@@ -89,12 +95,15 @@ stages:
                   workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
                   commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
                   environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
-              - task: TerraformTask@5
-                displayName: Terrafrom Destroy
-                inputs:
-                  provider: 'azurerm'
-                  command: 'destroy'
-                  workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-                  commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
-                  environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
+
+      # When you want De-Comission AKS Cluster then Uncomment "destroy task" and the re-run pipeline.
+
+              # - task: TerraformTask@5
+              #   displayName: Terrafrom Destroy
+              #   inputs:
+              #     provider: 'azurerm'
+              #     command: 'destroy'
+              #     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+              #     commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
+              #     environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
 
