@@ -64,5 +64,6 @@ stages:
           azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
           azureResourceGroup: 'terraform-aks-prod'
           kubernetesCluster: 'terraform-aks-prod-cluster'
+          useClusterAdmin: true
           namespace: 'default'
         
