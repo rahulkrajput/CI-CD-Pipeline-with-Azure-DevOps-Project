@@ -216,7 +216,7 @@ kubectl cluster-info
 kubectl get nodes
 ```
 
-## Step-12: Delete Resources
+## Step-11: Delete Resources
 Delete the Resources either through the Pipeline Or Manually 
 
 ### Pipeline
