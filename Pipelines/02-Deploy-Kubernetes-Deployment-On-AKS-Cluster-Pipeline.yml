@@ -65,4 +65,4 @@ stages:
           azureResourceGroup: 'terraform-aks-prod'
           kubernetesCluster: 'terraform-aks-prod-cluster'
           namespace: 'default'
-        #  arguments: 'kubectl delete -f kubernetes-cluster-manifests/01-Webserver-Apps/'
+        
