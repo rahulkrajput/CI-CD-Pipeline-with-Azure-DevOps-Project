@@ -222,6 +222,11 @@ kubectl get nodes
   
 - Delete AD Groups  
 
+## Notes
+
+- **Make sure to replace placeholders (e.g., Your_Subscription_ID, your_cluster_name, your_region, your_resource_group_name...etc) with your actual Configuration.**
+
+- **This is a basic setup for demonstration purposes. In a production environment, you should follow best practices for security and performance.**
 
 ## References
 - [Publish & Download Artifacts in Azure DevOps Pipeline](https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml)
