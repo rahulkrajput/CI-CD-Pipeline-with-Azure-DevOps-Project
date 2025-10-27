@@ -8,25 +8,43 @@ trigger:
 
 pool: Default
   
+# Deploy Nginx App On Cluster
+# Stage-01: Deploy Nginx App Deployment
+# Stage-02: Deploy Nginx App Service (LoadBalancer)
+stages: 
 
-steps:
-- task: KubernetesManifest@1
-  inputs:
-    action: 'deploy'
-    connectionType: 'azureResourceManager'
-    azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
-    azureResourceGroup: 'terraform-aks-prod'
-    kubernetesCluster: 'terraform-aks-prod-cluster'
-    useClusterAdmin: true
-    namespace: 'default'
-    manifests: 'kubernetes-cluster-manifests/01-Webserver-Apps/01-NginxApp1-Deployment.yml'
-- task: KubernetesManifest@1
-  inputs:
-    action: 'deploy'
-    connectionType: 'azureResourceManager'
-    azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
-    azureResourceGroup: 'terraform-aks-prod'
-    kubernetesCluster: 'terraform-aks-prod-cluster'
-    useClusterAdmin: true
-    namespace: 'default'
-    manifests: 'kubernetes-cluster-manifests/01-Webserver-Apps/02-NginxApp1-LoadBalancer-Service.yml'
+# Stage-01
+- stage: DeployNginxAppDeployment
+  jobs: 
+    - job: DeployNginxAppDeployment
+      pool: Default
+      steps:
+        - task: KubernetesManifest@1
+          displayName: Nginx App Deployment
+          inputs:
+            action: 'deploy'
+            connectionType: 'azureResourceManager'
+            azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
+            azureResourceGroup: 'terraform-aks-prod'
+            kubernetesCluster: 'terraform-aks-prod-cluster'
+            useClusterAdmin: true
+            namespace: 'default'
+            manifests: 'kubernetes-cluster-manifests/01-Webserver-Apps/01-NginxApp1-Deployment.yml'
+
+# Stage-02
+- stage: DeployNginxAppService
+  jobs: 
+    - job: DeployNginxAppService
+      pool: Default
+      steps:
+        - task: KubernetesManifest@1
+          displayName: Nginx App Service
+          inputs:
+            action: 'deploy'
+            connectionType: 'azureResourceManager'
+            azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
+            azureResourceGroup: 'terraform-aks-prod'
+            kubernetesCluster: 'terraform-aks-prod-cluster'
+            useClusterAdmin: true
+            namespace: 'default'
+            manifests: 'kubernetes-cluster-manifests/01-Webserver-Apps/02-NginxApp1-LoadBalancer-Service.yml'
