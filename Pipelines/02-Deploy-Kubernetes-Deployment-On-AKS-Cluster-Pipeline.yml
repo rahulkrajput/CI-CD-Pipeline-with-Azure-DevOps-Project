@@ -57,6 +57,7 @@ stages:
       pool: Default
       steps:
       - task: KubernetesManifest@1
+        displayName: Delete Nginx App 
         inputs:
           action: 'delete'
           connectionType: 'azureResourceManager'
