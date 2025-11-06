@@ -221,7 +221,7 @@ Delete the Resources either through the Pipeline Or Manually
 
 ### Pipeline
 - If you want to Delete Nginx App Deployment then Uncomment "delete task" in Deploy Kubernetes Deployment(pipeline) and re-run the pipeline.
-- Uncomment "destroy task" in Provision AKS Cluster(pipeline) and re-run the pipeline
+- If you want to Delete AKS Cluster, Uncomment "destroy task" in Provision AKS Cluster(pipeline) and re-run the pipeline
 
 ### Manually
 - Delete the Resource group which will delete all resources
