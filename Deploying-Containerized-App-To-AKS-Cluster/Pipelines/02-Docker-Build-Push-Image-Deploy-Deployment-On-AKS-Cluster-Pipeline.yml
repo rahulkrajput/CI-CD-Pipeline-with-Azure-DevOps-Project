@@ -7,7 +7,12 @@ trigger: none
 #      - Pipelines/02-Docker-Build-Push-Image-Deploy-Deployment-On-AKS-Cluster-Pipeline.yml
 
 pool: Default
-  
+
+
+variables:
+  tag: '$(Build.BuildId)'
+
+
 # Deploy Nginx App On Cluster
 # Stage-01: Deploy Nginx App Deployment
 # Stage-02: Deploy Nginx App Service (LoadBalancer)
@@ -27,11 +32,12 @@ stages:
     
     - task: Docker@2
       inputs:
-        containerRegistry: 'Docker Hub Service Conn for ArgoCD'
+        containerRegistry: 'Docker Hub Service Conn'
         repository: 'rahulkrajput/kubernetes'
         command: 'buildAndPush'
-        Dockerfile: '**/Dockerfile'
-        tags: 'nginx-v5'
+        Dockerfile: '**/Deploying-Containerized-App-To-AKS-Cluster/Dockerfile'
+        tags: '$(tag)'
+    
 
 
 
@@ -46,7 +52,7 @@ stages:
           inputs:
             action: 'deploy'
             connectionType: 'azureResourceManager'
-            azureSubscriptionConnection: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+            azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
             azureResourceGroup: 'terraform-aks-prod'
             kubernetesCluster: 'terraform-aks-prod-cluster'
             useClusterAdmin: true
@@ -64,7 +70,7 @@ stages:
           inputs:
             action: 'deploy'
             connectionType: 'azureResourceManager'
-            azureSubscriptionConnection: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+            azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
             azureResourceGroup: 'terraform-aks-prod'
             kubernetesCluster: 'terraform-aks-prod-cluster'
             useClusterAdmin: true
