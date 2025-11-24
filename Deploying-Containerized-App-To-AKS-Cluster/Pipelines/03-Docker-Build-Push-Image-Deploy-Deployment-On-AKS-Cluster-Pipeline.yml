@@ -71,16 +71,10 @@ stages:
         itemPattern: '**/*.yml'
         targetPath: '$(System.ArtifactsDirectory)'
 
-# Stage-03
 
-- stage: DeployWebAppDeployment
-  jobs: 
-    - job: DeployWebAppDeployment
-      pool: Default
-      steps:
-        - task: KubernetesManifest@1
-          displayName: Web App Deployment
-          inputs:
+    - task: KubernetesManifest@1
+      displayName: Web App Deployment
+      inputs:
             action: 'deploy'
             connectionType: 'azureResourceManager'
             azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
@@ -88,19 +82,13 @@ stages:
             kubernetesCluster: 'terraform-aks-prod-cluster'
             useClusterAdmin: true
             namespace: 'default'
-            manifests: '$(System.ArtifactsDirectory)/01-NginxApp1-Deployment.yml'
+            manifests: '$(System.ArtifactsDirectory)'
             containers: 'rahulkrajput/kubernetes:$(tag)'
 
-# Stage-04
 
-- stage: DeployWebAppService
-  jobs: 
-    - job: DeployWebAppService
-      pool: Default
-      steps:
-        - task: KubernetesManifest@1
-          displayName: Web App Service
-          inputs:
+    - task: KubernetesManifest@1
+      displayName: Web App Service
+      inputs:
             action: 'deploy'
             connectionType: 'azureResourceManager'
             azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
