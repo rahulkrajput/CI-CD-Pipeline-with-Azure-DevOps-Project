@@ -6,7 +6,7 @@ trigger:
     include:
       - Deploying-Containerized-App-To-AKS-Cluster/Dockerfile
       - Deploying-Containerized-App-To-AKS-Cluster/index.html
-      - Pipelines/02-Docker-Build-Push-Image-Deploy-Deployment-On-AKS-Cluster-Pipeline.yml
+      - Deploying-Containerized-App-To-AKS-Cluster/Pipelines/02-Docker-Build-Push-Image-Deploy-Deployment-On-AKS-Cluster-Pipeline.yml
 
 
 variables:
