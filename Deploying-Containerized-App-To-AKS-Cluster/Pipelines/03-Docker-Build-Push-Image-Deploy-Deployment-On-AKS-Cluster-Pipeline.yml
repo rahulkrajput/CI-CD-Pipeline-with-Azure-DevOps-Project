@@ -1,10 +1,12 @@
 # Deploy Kubernetes Deployment On AKS Cluster Pipeline
 
-trigger: none
+trigger: 
  
-#  paths:
-#    include:
-#      - Pipelines/02-Docker-Build-Push-Image-Deploy-Deployment-On-AKS-Cluster-Pipeline.yml
+  paths:
+    include:
+      - Dockerfile
+      - index.html
+      - Pipelines/02-Docker-Build-Push-Image-Deploy-Deployment-On-AKS-Cluster-Pipeline.yml
 
 
 variables:
