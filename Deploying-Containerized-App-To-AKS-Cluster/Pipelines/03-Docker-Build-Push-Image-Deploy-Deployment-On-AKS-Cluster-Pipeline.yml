@@ -89,15 +89,15 @@ stages:
     - task: KubernetesManifest@1
       displayName: Web App Service
       inputs:
-            action: 'deploy'
-            connectionType: 'azureResourceManager'
-            azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
-            azureResourceGroup: 'terraform-aks-prod'
-            kubernetesCluster: 'terraform-aks-prod-cluster'
-            useClusterAdmin: true
-            namespace: 'default'
-            manifests: '$(System.ArtifactsDirectory)/02-NginxApp1-LoadBalancer-Service.yml'
-            containers: 'rahulkrajput/kubernetes:$(tag)'
+        action: 'deploy'
+        connectionType: 'azureResourceManager'
+        azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
+        azureResourceGroup: 'terraform-aks-prod'
+        kubernetesCluster: 'terraform-aks-prod-cluster'
+        useClusterAdmin: true
+        namespace: 'default'
+        manifests: '$(System.ArtifactsDirectory)'
+        containers: 'rahulkrajput/kubernetes:$(tag)'
 
 
 
