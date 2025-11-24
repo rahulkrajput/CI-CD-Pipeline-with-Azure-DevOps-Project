@@ -36,15 +36,15 @@ stages:
     
     - task: Docker@2
       inputs:
-        containerRegistry: 'Docker Hub Service Conn for ArgoCD'
+        containerRegistry: 'Docker Hub Service Conn'
         repository: 'rahulkrajput/kubernetes'
         command: 'buildAndPush'
-        Dockerfile: '**/CI-CD-Terraform-AKS-Cluster-Pipeline/Dockerfile'
+        Dockerfile: '**/Deploying-Containerized-App-To-AKS-Cluster/Dockerfile'
         tags: '$(tag)'
     - task: CopyFiles@2
       inputs:
-        SourceFolder: '$(System.DefaultWorkingDirectory)/CI-CD-Terraform-AKS-Cluster-Pipeline/kubernetes-cluster-manifests/01-Web-Apps'
-        Contents: '**/*.yaml'
+        SourceFolder: '$(System.DefaultWorkingDirectory)/Deploying-Containerized-App-To-AKS-Cluster/kubernetes-cluster-manifests/01-Webserver-Apps'
+        Contents: '**/*.yml'
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
     - task: PublishBuildArtifacts@1
       inputs:
@@ -66,7 +66,7 @@ stages:
       inputs:
         buildType: 'current'
         artifactName: 'manifests'
-        itemPattern: '**/*.yaml'
+        itemPattern: '**/*.yml'
         targetPath: '$(System.ArtifactsDirectory)'
 
 # Stage-03
@@ -81,12 +81,12 @@ stages:
           inputs:
             action: 'deploy'
             connectionType: 'azureResourceManager'
-            azureSubscriptionConnection: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+            azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
             azureResourceGroup: 'terraform-aks-prod'
             kubernetesCluster: 'terraform-aks-prod-cluster'
             useClusterAdmin: true
             namespace: 'default'
-            manifests: '$(System.ArtifactsDirectory)/CI-CD-Terraform-AKS-Cluster-Pipeline/kubernetes-cluster-manifests/01-Web-Apps/01-Deployment-Web-App.yml'
+            manifests: '$(System.ArtifactsDirectory)/Deploying-Containerized-App-To-AKS-Cluster/kubernetes-cluster-manifests/01-Webserver-Apps/01-NginxApp1-Deployment.yml'
             containers: 'rahulkrajput/kubernetes:$(tag)'
 
 # Stage-04
@@ -101,12 +101,12 @@ stages:
           inputs:
             action: 'deploy'
             connectionType: 'azureResourceManager'
-            azureSubscriptionConnection: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+            azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
             azureResourceGroup: 'terraform-aks-prod'
             kubernetesCluster: 'terraform-aks-prod-cluster'
             useClusterAdmin: true
             namespace: 'default'
-            manifests: '$(System.ArtifactsDirectory)/CI-CD-Terraform-AKS-Cluster-Pipeline/kubernetes-cluster-manifests/01-Web-Apps/02-Service-Web-App.yml'
+            manifests: '$(System.ArtifactsDirectory)/Deploying-Containerized-App-To-AKS-Cluster/kubernetes-cluster-manifests/01-Webserver-Apps/02-NginxApp1-LoadBalancer-Service.yml'
             containers: 'rahulkrajput/kubernetes:$(tag)'
 
 
