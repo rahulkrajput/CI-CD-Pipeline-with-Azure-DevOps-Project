@@ -6,8 +6,10 @@ trigger: none
 #    include:
 #      - Pipelines/02-Docker-Build-Push-Image-Deploy-Deployment-On-AKS-Cluster-Pipeline.yml
 
+
 variables:
-  tag: '$(Build.BuildId)'
+    system.debug: 'true'
+    tag: '$(Build.BuildId)'
 
 pool: Default
   
