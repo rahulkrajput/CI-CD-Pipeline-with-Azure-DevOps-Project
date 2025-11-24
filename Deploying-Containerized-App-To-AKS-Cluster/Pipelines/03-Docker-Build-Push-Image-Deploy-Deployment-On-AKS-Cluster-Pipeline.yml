@@ -4,7 +4,7 @@ trigger:
  
   paths:
     include:
-      - Dockerfile
+      - Deploying-Containerized-App-To-AKS-Cluster/Dockerfile
       - index.html
       - Pipelines/02-Docker-Build-Push-Image-Deploy-Deployment-On-AKS-Cluster-Pipeline.yml
 
