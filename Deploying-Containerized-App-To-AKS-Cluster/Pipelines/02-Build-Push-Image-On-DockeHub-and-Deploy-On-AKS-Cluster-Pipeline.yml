@@ -6,7 +6,7 @@ trigger:
     include:
       - Deploying-Containerized-App-To-AKS-Cluster/Dockerfile
       - Deploying-Containerized-App-To-AKS-Cluster/index.html
-      - Deploying-Containerized-App-To-AKS-Cluster/Pipelines/02-Docker-Build-Push-Image-Deploy-Deployment-On-AKS-Cluster-Pipeline.yml
+      - Deploying-Containerized-App-To-AKS-Cluster/Pipelines/02-Build-Push-Image-On-DockeHub-and-Deploy-On-AKS-Cluster-Pipeline.yml
 
 
 variables:
@@ -17,10 +17,9 @@ pool: Default
   
 # Deploy Nginx App On Cluster
 # Stage-01: Build Docker Image, Copy File From System Directory & Publish the Artifacts to Pipeline WorkSpace
-# Stage-02: Download the Pipeline Artifacts Files & Deploy to AKS Cluster with Docker Image
-# Stage-03: Deploy Web App Deployment
-# Stage-04: Deploy Web App Service (LoadBalancer)
-# Stage-05: When you want Delete Nginx App then Uncomment "delete task" and the re-run pipeline.  
+# Stage-02: Download the Pipeline Artifacts Files & Deploy Web App Deployment & Service (LoadBalancer) on AKS Cluster with Docker Image
+# Stage-03: When you want Delete Nginx App then Uncomment "delete task" and the re-run pipeline.
+
 
 resources:
 - repo: self
@@ -106,7 +105,7 @@ stages:
 # When you want Delete Web App then Uncomment "delete task" and the re-run pipeline.  
 
 
-# Stage-05
+# Stage-03
 # - stage: DeleteNginxApp
 #   jobs: 
 #     - job: DeleteNginxApp
@@ -117,7 +116,7 @@ stages:
 #         inputs:
 #           action: 'delete'
 #           connectionType: 'azureResourceManager'
-#           azureSubscriptionConnection: 'GitOps-ArgoCD-Terraform-AKS-Cluster-svc-conn'
+#           azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
 #           azureResourceGroup: 'terraform-aks-prod'
 #           kubernetesCluster: 'terraform-aks-prod-cluster'
 #           useClusterAdmin: true
