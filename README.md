@@ -215,8 +215,98 @@ kubectl cluster-info
 # List Kubernetes Worker Nodes
 kubectl get nodes
 ```
+## Step-11: Deploy Kubernetes Deployment On AKS Cluster
+```
 
-## Step-11: Delete Resources
+# Deploy Nginx App On Cluster
+# Stage-01: Deploy Nginx App Deployment
+# Stage-02: Deploy Nginx App Service (LoadBalancer)
+# Stage-03: When you want Delete Nginx App then Uncomment "delete task" and the re-run pipeline.  
+
+stages: 
+
+# Stage-01
+- stage: DeployNginxAppDeployment
+  jobs: 
+    - job: DeployNginxAppDeployment
+      pool: Default
+      steps:
+        - task: KubernetesManifest@1
+          displayName: Deploy Nginx App Deployment
+          inputs:
+            action: 'deploy'
+            connectionType: 'azureResourceManager'
+            azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
+            azureResourceGroup: 'terraform-aks-prod'
+            kubernetesCluster: 'terraform-aks-prod-cluster'
+            useClusterAdmin: true
+            namespace: 'default'
+            manifests: 'kubernetes-cluster-manifests/01-Webserver-Apps/01-NginxApp1-Deployment.yml'
+
+# Stage-02
+- stage: DeployNginxAppService
+  jobs: 
+    - job: DeployNginxAppService
+      pool: Default
+      steps:
+        - task: KubernetesManifest@1
+          displayName: Deploy Nginx App Service
+          inputs:
+            action: 'deploy'
+            connectionType: 'azureResourceManager'
+            azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
+            azureResourceGroup: 'terraform-aks-prod'
+            kubernetesCluster: 'terraform-aks-prod-cluster'
+            useClusterAdmin: true
+            namespace: 'default'
+            manifests: 'kubernetes-cluster-manifests/01-Webserver-Apps/02-NginxApp1-LoadBalancer-Service.yml'
+
+# When you want Delete Nginx App then Uncomment "delete task" and the re-run pipeline.  
+
+# Stage-03
+# - stage: DeleteNginxApp
+#   jobs: 
+#     - job: DeleteNginxApp
+#       pool: Default
+#       steps:
+#       - task: KubernetesManifest@1
+#         displayName: Delete Nginx App 
+#         inputs:
+#           action: 'delete'
+#           connectionType: 'azureResourceManager'
+#           azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
+#           azureResourceGroup: 'terraform-aks-prod'
+#           kubernetesCluster: 'terraform-aks-prod-cluster'
+#           useClusterAdmin: true
+#           namespace: 'default'
+#           arguments: '-f kubernetes-cluster-manifests/01-Webserver-Apps/'
+        
+```
+## Step-12: Verify The Resources 
+```
+# To get Pods
+kubectl get pod
+
+Output:
+
+NAME                                     READY   STATUS    RESTARTS   AGE
+app1-nginx-deployment-5cf6649c87-snxs4   1/1     Running   0          6m51s
+
+# To get Service
+kubectl get svc
+
+Output:
+
+NAME                           TYPE           CLUSTER-IP    EXTERNAL-IP     PORT(S)        AGE
+app1-nginx-clusterip-service   LoadBalancer   10.0.81.143   4.187.232.161   80:31309/TCP   6m48s
+kubernetes                     ClusterIP      10.0.0.1      <none>          443/TCP        85m
+
+```
+**Output:**
+
+<img width="1043" height="254" alt="Image" src="https://github.com/user-attachments/assets/e0655ec4-fd33-4c41-a787-664523243497" />
+
+## Step-13: Delete Resources
 Delete the Resources either through the Pipeline Or Manually 
 
 ### Pipeline
