@@ -110,21 +110,21 @@ stages:
 
 
 # Stage-03
-# - stage: DeleteNginxApp
-#   jobs: 
-#     - job: DeleteNginxApp
-#       pool: Default
-#       steps:
-#       - task: KubernetesManifest@1
-#         displayName: Delete Nginx App 
-#         inputs:
-#           action: 'delete'
-#           connectionType: 'azureResourceManager'
-#           azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
-#           azureResourceGroup: 'terraform-aks-prod'
-#           kubernetesCluster: 'terraform-aks-prod-cluster'
-#           useClusterAdmin: true
-#           namespace: 'default'
-#           arguments: '-f kubernetes-cluster-manifests/01-Webserver-Apps/'
+- stage: DeleteNginxApp
+  jobs: 
+    - job: DeleteNginxApp
+      pool: Default
+      steps:
+      - task: KubernetesManifest@1
+        displayName: Delete Nginx App 
+        inputs:
+          action: 'delete'
+          connectionType: 'azureResourceManager'
+          azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
+          azureResourceGroup: 'terraform-aks-prod'
+          kubernetesCluster: 'terraform-aks-prod-cluster'
+          useClusterAdmin: true
+          namespace: 'default'
+          arguments: '-f kubernetes-cluster-manifests/01-Webserver-Apps/'
         
       
