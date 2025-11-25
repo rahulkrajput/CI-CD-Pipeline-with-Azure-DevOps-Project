@@ -87,7 +87,7 @@ stages:
         kubernetesCluster: 'terraform-aks-prod-cluster'
         useClusterAdmin: true
         namespace: 'default'
-        manifests: '$(System.ArtifactsDirectory)'
+        manifests: '$(System.ArtifactsDirectory)/01-NginxApp1-Deployment.yml'
         containers: 'rahulkrajput/kubernetes:$(tag)'
 
 
@@ -101,7 +101,7 @@ stages:
         kubernetesCluster: 'terraform-aks-prod-cluster'
         useClusterAdmin: true
         namespace: 'default'
-        manifests: '$(System.ArtifactsDirectory)'
+        manifests: '$(System.ArtifactsDirectory)/02-NginxApp1-LoadBalancer-Service.yml'
         containers: 'rahulkrajput/kubernetes:$(tag)'
 
 
