@@ -98,12 +98,12 @@ stages:
 
       # When you want De-Comission AKS Cluster then Uncomment "destroy task" and the re-run pipeline.
 
-              - task: TerraformTask@5
-                displayName: Terrafrom Destroy
-                inputs:
-                  provider: 'azurerm'
-                  command: 'destroy'
-                  workingDirectory: '$(System.DefaultWorkingDirectory)/Deploying-Containerized-App-To-AKS-Cluster/terraform-manifests'
-                  commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
-                  environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
+              # - task: TerraformTask@5
+              #   displayName: Terrafrom Destroy
+              #   inputs:
+              #     provider: 'azurerm'
+              #     command: 'destroy'
+              #     workingDirectory: '$(System.DefaultWorkingDirectory)/Deploying-Containerized-App-To-AKS-Cluster/terraform-manifests'
+              #     commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)'
+              #     environmentServiceNameAzureRM: 'terraform-aks-cluster-svc-conn'
 
