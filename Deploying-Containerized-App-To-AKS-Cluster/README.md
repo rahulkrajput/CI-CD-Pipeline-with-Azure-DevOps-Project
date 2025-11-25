@@ -1,18 +1,19 @@
-# Provision Azure AKS using Terraform & Azure DevOps
+# Provision Azure AKS using Terraform | Azure DevOps Build Push Image On DockeHub and Deploy On AKS Cluster
 
 ## Step-01: Introduction
 - Create Azure DevOps Pipeline to create AKS cluster using Terraform
 - Terraform Manifests Validate
 - Provision Prod AKS Cluster
-
+- Build Push Image On DockeHub
+- Deploy On AKS Cluster
 
 ## Step-02: Install Azure Market Place Plugins in Azure DevOps
 - Install below listed plugins in your respective Azure DevOps Organization
 - [Plugin: Terraform by Microsoft Devlabs](https://marketplace.visualstudio.com/items?itemName=ms-devlabs.custom-terraform-tasks)
 
 
-
 ## Step-03: Review Terraform Manifests
+
 ### 01-main.tf
 - Comment Terraform Backend, because we are going to configure that in Azure DevOps
 
@@ -215,8 +216,103 @@ kubectl cluster-info
 # List Kubernetes Worker Nodes
 kubectl get nodes
 ```
+## Step-11: Build Push Image On DockeHub And Deploy On AKS Cluster
+```
+# Deploy Nginx App On Cluster
+# Stage-01: Build Docker Image, Copy File From System Directory & Publish the Artifacts to Pipeline WorkSpace
+# Stage-02: Download the Pipeline Artifacts Files & Deploy Web App Deployment & Service (LoadBalancer) on AKS Cluster with Docker Image
+# Stage-03: When you want Delete Nginx App then Uncomment "delete task" and the re-run pipeline.
 
-## Step-11: Delete Resources
+variables:
+    system.debug: 'true'
+    tag: '$(Build.BuildId)'
+
+pool: Default
+
+resources:
+- repo: self
+
+stages:
+
+# Stage-01 Build Docker Image, Copy File From System Directory & Publish the Artifacts to Pipeline WorkSpace
+
+- stage: Build
+  displayName: Build and push stage
+  jobs:
+  - job: Build
+    displayName: Build
+    pool: Default
+    steps:
+    
+    - task: Docker@2
+      displayName: Build & Push Docker Image
+      inputs:
+        containerRegistry: 'Docker Hub Service Conn'
+        repository: 'rahulkrajput/kubernetes'
+        command: 'buildAndPush'
+        Dockerfile: '**/Deploying-Containerized-App-To-AKS-Cluster/Dockerfile'
+        tags: '$(tag)'
+    - task: CopyFiles@2
+      displayName: Copy File From System Directory
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)/Deploying-Containerized-App-To-AKS-Cluster/kubernetes-cluster-manifests/01-Webserver-Apps'
+        Contents: '**/*.yml'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    - task: PublishBuildArtifacts@1
+      displayName: Publish Build Artifacts
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'manifests'
+        publishLocation: 'Container'
+
+
+# Stage-02 Download the Pipeline Artifacts Files & Deploy Web App Deployment & Service (LoadBalancer) on AKS Cluster with Docker Image
+
+- stage: Deploy
+  displayName: Deploy image
+  jobs:  
+  - job: Deploy
+    displayName: Deploy
+    pool: Default
+    steps:
+    - task: DownloadPipelineArtifact@2
+      displayName: Download Pipeline Artifacts
+      inputs:
+        buildType: 'current'
+        artifactName: 'manifests'
+        itemPattern: '**/*.yml'
+        targetPath: '$(System.ArtifactsDirectory)'
+
+
+    - task: KubernetesManifest@1
+      displayName: Web App Deployment
+      inputs:
+        action: 'deploy'
+        connectionType: 'azureResourceManager'
+        azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
+        azureResourceGroup: 'terraform-aks-prod'
+        kubernetesCluster: 'terraform-aks-prod-cluster'
+        useClusterAdmin: true
+        namespace: 'default'
+        manifests: '$(System.ArtifactsDirectory)/01-NginxApp1-Deployment.yml'
+        containers: 'rahulkrajput/kubernetes:$(tag)'
+
+
+    - task: KubernetesManifest@1
+      displayName: Web App Service
+      inputs:
+        action: 'deploy'
+        connectionType: 'azureResourceManager'
+        azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
+        azureResourceGroup: 'terraform-aks-prod'
+        kubernetesCluster: 'terraform-aks-prod-cluster'
+        useClusterAdmin: true
+        namespace: 'default'
+        manifests: '$(System.ArtifactsDirectory)/02-NginxApp1-LoadBalancer-Service.yml'
+        containers: 'rahulkrajput/kubernetes:$(tag)'
+```
+
+## Step-12: Delete Resources
 Delete the Resources either through the Pipeline Or Manually 
 
 ### Pipeline
