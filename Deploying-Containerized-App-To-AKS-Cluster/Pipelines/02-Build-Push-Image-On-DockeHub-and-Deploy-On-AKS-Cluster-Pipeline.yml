@@ -11,7 +11,7 @@ trigger:
 
 variables:
     system.debug: 'true'
-    tag: 143            #'$(Build.BuildId)'
+    tag: '$(Build.BuildId)'
 
 pool: Default
   
@@ -37,14 +37,14 @@ stages:
     pool: Default
     steps:
     
-    # - task: Docker@2
-    #   displayName: Build & Push Docker Image
-    #   inputs:
-    #     containerRegistry: 'Docker Hub Service Conn'
-    #     repository: 'rahulkrajput/kubernetes'
-    #     command: 'buildAndPush'
-    #     Dockerfile: '**/Deploying-Containerized-App-To-AKS-Cluster/Dockerfile'
-    #     tags: '$(tag)'
+    - task: Docker@2
+      displayName: Build & Push Docker Image
+      inputs:
+        containerRegistry: 'Docker Hub Service Conn'
+        repository: 'rahulkrajput/kubernetes'
+        command: 'buildAndPush'
+        Dockerfile: '**/Deploying-Containerized-App-To-AKS-Cluster/Dockerfile'
+        tags: '$(tag)'
     - task: CopyFiles@2
       displayName: Copy File From System Directory
       inputs:
@@ -110,21 +110,21 @@ stages:
 
 
 # Stage-03
-- stage: DeleteNginxApp
-  jobs: 
-    - job: DeleteNginxApp
-      pool: Default
-      steps:
-      - task: KubernetesManifest@1
-        displayName: Delete Nginx App 
-        inputs:
-          action: 'delete'
-          connectionType: 'azureResourceManager'
-          azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
-          azureResourceGroup: 'terraform-aks-prod'
-          kubernetesCluster: 'terraform-aks-prod-cluster'
-          useClusterAdmin: true
-          namespace: 'default'
-          arguments: '-f kubernetes-cluster-manifests/01-Webserver-Apps/'
+# - stage: DeleteNginxApp
+#   jobs: 
+#     - job: DeleteNginxApp
+#       pool: Default
+#       steps:
+#       - task: KubernetesManifest@1
+#         displayName: Delete Nginx App 
+#         inputs:
+#           action: 'delete'
+#           connectionType: 'azureResourceManager'
+#           azureSubscriptionConnection: 'terraform-aks-cluster-svc-conn'
+#           azureResourceGroup: 'terraform-aks-prod'
+#           kubernetesCluster: 'terraform-aks-prod-cluster'
+#           useClusterAdmin: true
+#           namespace: 'default'
+#           arguments: '-f kubernetes-cluster-manifests/01-Webserver-Apps/'
         
       
