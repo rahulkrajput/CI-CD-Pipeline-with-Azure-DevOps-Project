@@ -311,8 +311,37 @@ stages:
         manifests: '$(System.ArtifactsDirectory)/02-NginxApp1-LoadBalancer-Service.yml'
         containers: 'rahulkrajput/kubernetes:$(tag)'
 ```
+## Step-12: Checkout Web-App Working Or Not
+```
+# To get Pods
+kubectl get pod
 
-## Step-12: Delete Resources
+Output:
+
+NAME                                     READY   STATUS    RESTARTS   AGE
+app1-nginx-deployment-6ddc57497f-gcwkt   1/1     Running   0          2m16s
+
+# To get Service
+kubectl get svc
+
+Output:
+
+NAME                           TYPE           CLUSTER-IP   EXTERNAL-IP     PORT(S)        AGE
+app1-nginx-clusterip-service   LoadBalancer   10.0.50.91   4.187.249.175   80:32756/TCP   2m38s
+kubernetes                     ClusterIP      10.0.0.1     <none>          443/TCP        17m
+```
+
+**First Time Build And Push Image Output:**
+
+<img width="1044" height="302" alt="Image" src="https://github.com/user-attachments/assets/9c5ea358-2831-4fae-8227-c56c790d81ff" />
+
+**After a Change in the index.html file again, a new image Build And Push and Output look like the following:**
+
+<img width="1050" height="279" alt="Image" src="https://github.com/user-attachments/assets/797ec9fb-9053-4371-9e6a-30ff5d4a85bc" />
+
+
+
+## Step-13: Delete Resources
 Delete the Resources either through the Pipeline Or Manually 
 
 ### Pipeline
